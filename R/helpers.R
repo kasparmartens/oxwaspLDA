@@ -1,3 +1,5 @@
+
+#' @export
 check_convergence = function(likelihood, i, convergence_threshold){
   if(i == 1){
     return(FALSE)

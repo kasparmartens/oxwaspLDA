@@ -1,10 +1,11 @@
+#' @export
 compute_likelihood = function(gamma, Phi, alpha, beta){
   temp = digamma(gamma) - digamma(sum(gamma))
   # formula from appendix A3
-  out = lgamma(sum(alpha)) - sum(lgamma(alpha)) + sum((alpha-1)*temp) + 
-    sum(t(as.matrix(Phi)) * temp) +     
+  out = lgamma(sum(alpha)) - sum(lgamma(alpha)) + sum((alpha-1)*temp) +
+    sum(t(as.matrix(Phi)) * temp) +
     sum(Phi * t(ifelse(beta > 0, log(beta), 0))) -   # this bit can be written as   sum( (w[d,]*Phi) * t(log(beta)) )
-    ( lgamma(sum(gamma)) - sum(lgamma(gamma)) + sum((gamma-1)*temp) ) - 
+    ( lgamma(sum(gamma)) - sum(lgamma(gamma)) + sum((gamma-1)*temp) ) -
     sum(ifelse(Phi>0, Phi * log(Phi), 0))
   return(out)
 }
@@ -13,6 +14,8 @@ compute_likelihood = function(gamma, Phi, alpha, beta){
 
 
 # E step for a specific document
+
+#' @export
 E_step_single_doc = function(gamma, Phi, alpha, beta, W_doc, max_iter, convergence_threshold){
   likelihood = rep(NA, max_iter)
   for(i in 1:max_iter){

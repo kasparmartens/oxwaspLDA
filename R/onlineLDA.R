@@ -81,16 +81,17 @@ onlineLDA_minibatch <- function(w, testw, n_topics, batch_size = 8, n_iter = 100
     }
 
     # update_obj = online_update_single_doc(alpha, phi[,,doc], gamma[doc,], w[doc, ], lambda, conv_threshold, MAX_ITER_var_EM)
-    new_lambda = matrix(eta, nrow(lambda), ncol(lambda))
+    new_lambda = matrix(0, nrow(lambda), ncol(lambda))
     for(k in 1:length(doc)){
       j = doc[k]
       phi[, , j] = res[[k]]$Phi
       gamma[j, ] = res[[k]]$gamma
       new_lambda = new_lambda + t(phi[, , j])
     }
+    new_lambda = eta + (M / batch_size) * new_lambda
 
     # mean_lambda <- eta + M * t(phi[, , doc])
-    lambda <- (1 - rho) * lambda + rho * (M / batch_size)* new_lambda
+    lambda <- (1 - rho) * lambda + rho * new_lambda
 
     # update alpha and eta
     newalpha <- update_alpha(alpha, gamma[doc, , drop=FALSE], batch_size)
