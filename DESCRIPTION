@@ -1,0 +1,11 @@
+Package: oxwaspLDA
+Type: Package
+Title: Topic modelling with LDA
+Version: 0.1
+Date: 2016-01-27
+Author: Kaspar Märtens
+Maintainer: Who to complain to <yourfault@somewhere.net>
+Description: More about what it does (maybe more than one line)
+License: What license is it under?
+LazyData: TRUE
+Imports: gtools, foreach, iterators, doParallel

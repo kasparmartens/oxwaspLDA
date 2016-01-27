@@ -1,0 +1,30 @@
+### Without smoothing
+
+#' @export
+LDA = function(W, n_topics = 3, max_iter = 100, max_iter_E_step = 10, convergence_threshold=1e-6){
+  k = n_topics
+  V = ncol(W)
+  M = nrow(W)
+  alpha <- rep(1, k)
+  beta <- rdirichlet(k, rep(1, V))
+  gamma <- matrix((alpha + V/k), M, k)
+  phi <- array(0, dim = c(V, k, M))
+
+  likelihood = rep(NA, max_iter)
+  for(i in 1:max_iter){
+    # E step
+    obj = E_step(gamma, phi, alpha, beta, W, max_iter_E_step, convergence_threshold)
+    likelihood[i] = obj$likelihood
+    phi = obj$phi
+    gamma = obj$gamma
+    # M step
+    beta = update_beta(phi, W, k)
+    alpha = update_alpha(alpha, gamma, M)
+    if(i > 5){
+      alpha = update_alpha_vec(alpha, gamma, M)
+    }
+    cat(sprintf("Iteration %d of EM completed. Likelihood: %1.3f \n", i, likelihood[i]))
+    if(check_convergence(likelihood, i, convergence_threshold)) break
+  }
+  return(list(likelihood = likelihood[1:i], phi = obj$phi, gamma = obj$gamma, alpha = alpha, beta=beta))
+}
